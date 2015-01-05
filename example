@@ -1,0 +1,71 @@
+from os.path import basename
+
+class AbstractReport(object):
+    """
+    Base parsing class
+    """
+    _table_fields = None
+
+    def __init__(self, file_path, records):
+        """
+        initializes the class
+        """
+        self._file_path = file_path
+        self._records = records
+
+    def calc_coords(self):
+        """
+        calculates coordinates to be written to report table
+        """
+        raise NotImplementedError
+
+    def write_table(self):
+        """
+        parses the records in the file
+        """
+
+        coords = self.calc_coords()
+        print ('writes a table using fields %s '
+               '\nand calculated coords %s to file %s' %
+               (self._table_fields, coords, basename(self._file_path)))
+
+
+class OrthoCheckReport(AbstractReport):
+    """
+    Orthongonal Check Report Class
+    """
+    _table_fields = ['FLD_A', 'FLD_B', 'FLD_C']
+
+    def calc_coords(self):
+        """
+        calculates coordinates to be written to report table
+        """
+        print ('special Orthogonal Check report calculations using records %s' %
+               self._records)
+        return ['ortho', 'check', 'results']
+
+
+class QAQCReport(AbstractReport):
+    """
+    QAQC Report class
+    """
+    _table_fields = ['FLD_X', 'FLD_Y', 'FLD_Z']
+
+    def calc_coords(self):
+        """
+        calculates coordinates to be written to report table
+        """
+        print ('special QAQC report calculations using records %s' %
+               self._records)
+        return ['qaqc', 'report', 'results']
+
+
+if __name__ == '__main__':
+    input_file = r'c:\test\seismic_file.txt'
+    records = ['reca', 'recb', 'recc']
+
+    ocr = OrthoCheckReport(input_file, records)
+    qqr = QAQCReport(input_file, records)
+
+    ocr.write_table()
+    qqr.write_table()
